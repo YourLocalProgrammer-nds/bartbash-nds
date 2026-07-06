@@ -12,6 +12,7 @@ $GRIT bg1.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
 $GRIT bg2.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
 $GRIT bg3.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
 $GRIT bg4.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
+$GRIT bg5.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
 $GRIT gmdialog.png -ftB -fh! -gTFF00FF -gt -gB8 -mR8 -mLs
 
 mv *.pal *.img *.map ../nitrofiles/bg

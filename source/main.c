@@ -22,19 +22,22 @@ bool isheld = false;
 s16 bartdata[127][4];
 const float pi = M_PI;
 int killedbarts = 0;
-int room = 0;
+int room = 3;
 bool dialog = true;
 int spikex = 160;
 bool down = false;
 int thwompy = 5;
 int killtick = 0;
+int nsp = 0;
 char barttext[20][100] = {
     "click all the barts!!!!!",
     "spike the barts!!!!!",
     "bart splat!!!!!!!!!",
     "bart goes boom!!!!!!!!!!",
+    "bart turns into frogger!!!!!!!",
 };
 s16 barts[3][10];
+s16 bullet[120][2];
 //couple functions
 int32_t degreesToNflibAngle(float degrees) {
     return (int32_t)(degrees * 512 / 360) % 512;
@@ -95,10 +98,18 @@ int loadroom(int roomnum) {
             NF_SpriteFrame(1, 2, 3);
             break;
         case 3:
-            mmUnload(MOD_LVL4MUSIC);
+            mmUnload(MOD_LVL3MUSIC);
             mmLoad(MOD_LVL4MUSIC);
             mmStart(MOD_LVL4MUSIC, MM_PLAY_LOOP);
-            NF_CreateSprite(1, 0, 0, 0, 100, 5);
+            NF_CreateSprite(1, 0, 0, 0, 90, 35);
+            NF_CreateSprite(1, 1, 0, 0, 110, 140);
+            NF_SpriteFrame(1, 1, 4);
+            nsp = 0;
+            break;
+        case 4:
+            mmUnload(MOD_LVL4MUSIC);
+            mmLoad(MOD_LVL5MUSIC);
+            mmStart(MOD_LVL5MUSIC, MM_PLAY_LOOP);
             break;
     }
 }
@@ -148,6 +159,7 @@ int main(int argc, char** argv)
     mmSelectMode(MM_MODE_C);
     mmLoadEffect(SFX_OW);
     mmLoadEffect(SFX_BOINK2);
+    mmLoadEffect(SFX_GUNSHOT2);
     mmLoad(MOD_LVL1MUSIC);
     mmStart(MOD_LVL1MUSIC, MM_PLAY_LOOP);
     while (1)
@@ -302,6 +314,39 @@ int main(int argc, char** argv)
                     NF_DeleteSprite(1, 1);
                 }
                 break;
+            case 3:
+                if (pressed & KEY_A) {
+                    NF_CreateSprite(1, nsp+2, 0, 0, 110, 140);
+                    NF_SpriteFrame(1, nsp + 2, 5);
+                    bullet[nsp][1] = 140;
+                    nsp++;
+                    mmEffect(SFX_GUNSHOT2);
+                }
+                if (down == true) {
+                    dialog = true;
+                    NF_DeleteSprite(1, 0);
+                    NF_DeleteSprite(1, 1);
+                    room++;
+                    NF_DeleteTiledBg(1, 3);
+                    NF_CreateTiledBg(1, 3, "gmbox");
+                }
+                for (int i = 0; i < nsp; i++) {
+                    if (bullet[i][1] != -64) {
+                        bullet[i][1] = bullet[i][1] - 2;
+                        NF_MoveSprite(1, i + 2, 110, bullet[i][1]);
+                        if (bullet[i][1] <= 40) {
+                            down = true;
+                        }
+                        if (down == true) {
+                            bullet[i][1] = -64;
+                            NF_DeleteSprite(1, i + 2);
+                            mmEffect(SFX_OW);
+                        }
+                    }
+                }
+                break;
+            case 4:
+
             }
         }
         // Update OAM array

@@ -1,4 +1,11 @@
-#define SFX_OW    0
-#define MSL_NSONGS    0
-#define MSL_NSAMPS    1
-#define MSL_BANKSIZE    1
+#define SFX_BOINK2    0
+#define SFX_GUNSHOT2    1
+#define MOD_LVL1MUSIC    0
+#define MOD_LVL2MUSIC    1
+#define MOD_LVL3MUSIC    2
+#define MOD_LVL4MUSIC    3
+#define MOD_LVL5MUSIC    4
+#define SFX_OW    269
+#define MSL_NSONGS    5
+#define MSL_NSAMPS    270
+#define MSL_BANKSIZE    275
