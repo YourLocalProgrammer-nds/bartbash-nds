@@ -55,49 +55,51 @@ int loadroom(int roomnum) {
     killedbarts = 0;
     down = false;
     killtick = 0;
-    if (roomnum == 0) {
-        for (int i = 0; i < 30; i++) {
-            bartdata[i][1] = rand() % 256;
-            bartdata[i][2] = rand() % 192;
-            bartdata[i][3] = 1 + (rand() % 359);
-            bartdata[i][4] = 1 + (rand() % 5);
-            NF_CreateSprite(1, i, 0, 0, bartdata[i][1], bartdata[i][2]);
-        }
-    }
-    if (roomnum == 1) {
-        mmUnload(MOD_LVL1MUSIC);
-        mmLoad(MOD_LVL2MUSIC);
-        mmStart(MOD_LVL2MUSIC, MM_PLAY_LOOP);
-        NF_CreateSprite(1, 0, 0, 0, spikex, 136);
-        NF_SpriteFrame(1, 0, 1);
-        NF_CreateSprite(1, 1, 0, 0, 180, 100);
-        NF_CreateSprite(1, 2, 0, 0, 220, 80);
-        NF_CreateSprite(1, 3, 0, 0, 240, 100);
-        barts[0][1] = 180;
-        barts[0][2] = 100;
-        barts[1][1] = 220;
-        barts[1][2] = 80;
-        barts[2][1] = 240;
-        barts[2][2] = 100;
-        for (int i = 0; i < 3; i++) {
-            barts[i][3] = 0;
-        }
-    }
-    if (roomnum == 2) {
-        mmUnload(MOD_LVL2MUSIC);
-        mmLoad(MOD_LVL3MUSIC);
-        mmStart(MOD_LVL3MUSIC, MM_PLAY_LOOP);
-        NF_CreateSprite(1, 0, 0, 0, 112, 5);
-        NF_SpriteFrame(1, 0, 2);
-        NF_CreateSprite(1, 1, 0, 0, 112, 120);
-        NF_CreateSprite(1, 2, 0, 0, 112, 40);
-        NF_SpriteFrame(1, 2, 3);
-    }
-    if (roomnum == 3) {
-        mmUnload(MOD_LVL4MUSIC);
-        mmLoad(MOD_LVL4MUSIC);
-        mmStart(MOD_LVL4MUSIC, MM_PLAY_LOOP);
-        NF_CreateSprite(1, 0, 0, 0, 100, 5);
+    switch (roomnum) {
+        case 0:
+            for (int i = 0; i < 30; i++) {
+                bartdata[i][1] = rand() % 256;
+                bartdata[i][2] = rand() % 192;
+                bartdata[i][3] = 1 + (rand() % 359);
+                bartdata[i][4] = 1 + (rand() % 5);
+                NF_CreateSprite(1, i, 0, 0, bartdata[i][1], bartdata[i][2]);
+            }
+            break;
+        case 1:
+            mmUnload(MOD_LVL1MUSIC);
+            mmLoad(MOD_LVL2MUSIC);
+            mmStart(MOD_LVL2MUSIC, MM_PLAY_LOOP);
+            NF_CreateSprite(1, 0, 0, 0, spikex, 136);
+            NF_SpriteFrame(1, 0, 1);
+            NF_CreateSprite(1, 1, 0, 0, 180, 100);
+            NF_CreateSprite(1, 2, 0, 0, 220, 80);
+            NF_CreateSprite(1, 3, 0, 0, 240, 100);
+            barts[0][1] = 180;
+            barts[0][2] = 100;
+            barts[1][1] = 220;
+            barts[1][2] = 80;
+            barts[2][1] = 240;
+            barts[2][2] = 100;
+            for (int i = 0; i < 3; i++) {
+                barts[i][3] = 0;
+            }
+            break;
+        case 2:
+            mmUnload(MOD_LVL2MUSIC);
+            mmLoad(MOD_LVL3MUSIC);
+            mmStart(MOD_LVL3MUSIC, MM_PLAY_LOOP);
+            NF_CreateSprite(1, 0, 0, 0, 112, 5);
+            NF_SpriteFrame(1, 0, 2);
+            NF_CreateSprite(1, 1, 0, 0, 112, 120);
+            NF_CreateSprite(1, 2, 0, 0, 112, 40);
+            NF_SpriteFrame(1, 2, 3);
+            break;
+        case 3:
+            mmUnload(MOD_LVL4MUSIC);
+            mmLoad(MOD_LVL4MUSIC);
+            mmStart(MOD_LVL4MUSIC, MM_PLAY_LOOP);
+            NF_CreateSprite(1, 0, 0, 0, 100, 5);
+            break;
     }
 }
 int main(int argc, char** argv)
@@ -177,7 +179,8 @@ int main(int argc, char** argv)
             }
         }
         else {
-            if (room == 0) {
+            switch (room) {
+            case 0:
                 if (killedbarts == 30) {
                     dialog = true;
                     room++;
@@ -233,8 +236,8 @@ int main(int argc, char** argv)
                         }
                     }
                 }
-            }
-            if (room == 1) {
+                break;
+            case 1:
                 if (held & KEY_LEFT) {
                     spikex--;
                 }
@@ -246,7 +249,7 @@ int main(int argc, char** argv)
                         barts[i][3] = 8;
                     }
                     barts[i][2] = barts[i][2] - barts[i][3];
-                    NF_MoveSprite(1,i+1,barts[i][1],barts[i][2]);
+                    NF_MoveSprite(1, i + 1, barts[i][1], barts[i][2]);
                     for (int b = 0; b < 3; b++) {
                         if (barts[b][1] != -64) {
                             s16 st[3];
@@ -257,7 +260,7 @@ int main(int argc, char** argv)
                             eat[2] = barts[b][2];
                             if (distanceto(st, eat) < 16) {
                                 mmEffect(SFX_OW);
-                                NF_DeleteSprite(1, 1+b);
+                                NF_DeleteSprite(1, 1 + b);
                                 barts[b][1] = -64;
                                 barts[b][2] = '\0';
                                 barts[b][3] = '\0';
@@ -273,8 +276,8 @@ int main(int argc, char** argv)
                     NF_DeleteTiledBg(1, 3);
                     NF_CreateTiledBg(1, 3, "gmbox");
                 }
-            }
-            if (room == 2) {
+                break;
+            case 2:
                 if (pressed & KEY_DOWN) {
                     down = true;
                     NF_ShowSprite(1, 2, false);
@@ -298,8 +301,8 @@ int main(int argc, char** argv)
                     killtick = 15;
                     NF_DeleteSprite(1, 1);
                 }
+                break;
             }
-
         }
         // Update OAM array
         NF_SpriteOamSet(0);
