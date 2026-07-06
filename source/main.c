@@ -25,9 +25,14 @@ int killedbarts = 0;
 int room = 0;
 bool dialog = true;
 int spikex = 160;
+bool down = false;
+int thwompy = 5;
+int killtick = 0;
 char barttext[20][100] = {
     "click all the barts!!!!!",
     "spike the barts!!!!!",
+    "bart splat!!!!!!!!!",
+    "bart goes boom!!!!!!!!!!",
 };
 s16 barts[3][10];
 //couple functions
@@ -47,6 +52,9 @@ int distanceto(s16 start[3], s16 end[3]) {
     return sqrt(((start[1] - end[1]) * (start[1] - end[1])) + ((start[2] - end[2]) * (start[2] - end[2])));
 }
 int loadroom(int roomnum) {
+    killedbarts = 0;
+    down = false;
+    killtick = 0;
     if (roomnum == 0) {
         for (int i = 0; i < 30; i++) {
             bartdata[i][1] = rand() % 256;
@@ -56,23 +64,40 @@ int loadroom(int roomnum) {
             NF_CreateSprite(1, i, 0, 0, bartdata[i][1], bartdata[i][2]);
         }
     }
-    else {
-        if (roomnum == 1) {
-            NF_CreateSprite(1, 0, 0, 0, spikex, 136);
-            NF_SpriteFrame(1, 0, 1);
-            NF_CreateSprite(1, 1, 0, 0, 180, 100);
-            NF_CreateSprite(1, 2, 0, 0, 220, 80);
-            NF_CreateSprite(1, 3, 0, 0, 240, 100);
-            barts[0][1] = 180;
-            barts[0][2] = 100;
-            barts[1][1] = 220;
-            barts[1][2] = 80;
-            barts[2][1] = 240;
-            barts[2][2] = 100;
-            for (int i = 0; i < 3; i++) {
-                barts[i][3] = 0;
-            }
+    if (roomnum == 1) {
+        mmUnload(MOD_LVL1MUSIC);
+        mmLoad(MOD_LVL2MUSIC);
+        mmStart(MOD_LVL2MUSIC, MM_PLAY_LOOP);
+        NF_CreateSprite(1, 0, 0, 0, spikex, 136);
+        NF_SpriteFrame(1, 0, 1);
+        NF_CreateSprite(1, 1, 0, 0, 180, 100);
+        NF_CreateSprite(1, 2, 0, 0, 220, 80);
+        NF_CreateSprite(1, 3, 0, 0, 240, 100);
+        barts[0][1] = 180;
+        barts[0][2] = 100;
+        barts[1][1] = 220;
+        barts[1][2] = 80;
+        barts[2][1] = 240;
+        barts[2][2] = 100;
+        for (int i = 0; i < 3; i++) {
+            barts[i][3] = 0;
         }
+    }
+    if (roomnum == 2) {
+        mmUnload(MOD_LVL2MUSIC);
+        mmLoad(MOD_LVL3MUSIC);
+        mmStart(MOD_LVL3MUSIC, MM_PLAY_LOOP);
+        NF_CreateSprite(1, 0, 0, 0, 112, 5);
+        NF_SpriteFrame(1, 0, 2);
+        NF_CreateSprite(1, 1, 0, 0, 112, 120);
+        NF_CreateSprite(1, 2, 0, 0, 112, 40);
+        NF_SpriteFrame(1, 2, 3);
+    }
+    if (roomnum == 3) {
+        mmUnload(MOD_LVL4MUSIC);
+        mmLoad(MOD_LVL4MUSIC);
+        mmStart(MOD_LVL4MUSIC, MM_PLAY_LOOP);
+        NF_CreateSprite(1, 0, 0, 0, 100, 5);
     }
 }
 int main(int argc, char** argv)
@@ -109,7 +134,7 @@ int main(int argc, char** argv)
 
     srand(time(NULL));
     //loadgame(argv);
-    NF_LoadSpriteGfx("sprite/sprites", 0, 16, 32);
+    NF_LoadSpriteGfx("sprite/sprites", 0, 32, 32);
     NF_LoadSpritePal("sprite/sprites", 0);
     NF_LoadSpriteGfx("sprite/explode", 1, 32, 64);
     NF_LoadSpritePal("sprite/explode", 1);
@@ -120,6 +145,9 @@ int main(int argc, char** argv)
     mmInitDefault("nitro:/soundbank.bin");
     mmSelectMode(MM_MODE_C);
     mmLoadEffect(SFX_OW);
+    mmLoadEffect(SFX_BOINK2);
+    mmLoad(MOD_LVL1MUSIC);
+    mmStart(MOD_LVL1MUSIC, MM_PLAY_LOOP);
     while (1)
     {
         int held = keysHeld();
@@ -238,8 +266,40 @@ int main(int argc, char** argv)
                         }
                     }
                 }
+                if (killedbarts == 3) {
+                    dialog = true;
+                    NF_DeleteSprite(1, 0);
+                    room++;
+                    NF_DeleteTiledBg(1, 3);
+                    NF_CreateTiledBg(1, 3, "gmbox");
+                }
             }
-        
+            if (room == 2) {
+                if (pressed & KEY_DOWN) {
+                    down = true;
+                    NF_ShowSprite(1, 2, false);
+                }
+                if (down == true) {
+                    thwompy = thwompy + 4;
+                }
+                NF_MoveSprite(1, 0, 112, thwompy);
+                if (killtick > 0) {
+                    killtick--;
+                    mmEffect(SFX_BOINK2);
+                    if (killtick == 0) {
+                        dialog = true;
+                        NF_DeleteSprite(1, 0);
+                        room++;
+                        NF_DeleteTiledBg(1, 3);
+                        NF_CreateTiledBg(1, 3, "gmbox");
+                    }
+                }
+                if (thwompy == 93) {
+                    killtick = 15;
+                    NF_DeleteSprite(1, 1);
+                }
+            }
+
         }
         // Update OAM array
         NF_SpriteOamSet(0);
