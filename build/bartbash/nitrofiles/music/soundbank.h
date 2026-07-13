@@ -5,7 +5,13 @@
 #define MOD_LVL3MUSIC    2
 #define MOD_LVL4MUSIC    3
 #define MOD_LVL5MUSIC    4
-#define SFX_OW    269
-#define MSL_NSONGS    5
-#define MSL_NSAMPS    270
-#define MSL_BANKSIZE    275
+#define MOD_LVL6MUSIC    5
+#define MOD_LVL7MUSIC    6
+#define MOD_LVL8MUSIC    7
+#define MOD_LVL9MUSIC    8
+#define SFX_OW    447
+#define SFX_SIRENLOOP    448
+#define SFX_SUCCESS    449
+#define MSL_NSONGS    9
+#define MSL_NSAMPS    450
+#define MSL_BANKSIZE    459
