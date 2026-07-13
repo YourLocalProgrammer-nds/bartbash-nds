@@ -22,7 +22,7 @@ bool isheld = false;
 s16 bartdata[127][4];
 const float pi = M_PI;
 int killedbarts = 0;
-int room = 8;
+int room = 0;
 bool dialog = true;
 int spikex = 160;
 bool down = false;
